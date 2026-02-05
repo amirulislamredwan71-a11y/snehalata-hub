@@ -9,17 +9,16 @@ export async function POST(req) {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const fullPrompt = `
-      Identity: AURA AI - Supreme Soul of SNEHALATA Hub.
-      Task: Analyze the brand name "${prompt}" and give a royal business welcome.
-      Language: Bengali and English mix.
-      Style: Professional, Elite, Fashion-focused.
-      Rule: Max 2 sentences. Always start with "আসসালামু আলাইকুম।".
+      Identity: AURA AI - Supreme Soul of SNEHALATA.
+      Context: User is launching a fashion brand named "${prompt}".
+      Task: Give a very royal, elite, and professional welcome in Bengali.
+      Constraint: Max 2 sentences. Always start with "আসসালামু আলাইকুম।".
     `;
 
     const result = await model.generateContent(fullPrompt);
     const text = result.response.text();
     return NextResponse.json({ text });
   } catch (error) {
-    return NextResponse.json({ error: "System is warming up..." }, { status: 500 });
+    return NextResponse.json({ text: "আসসালামু আলাইকুম। আপনার রাজকীয় ব্র্যান্ডের যাত্রা শুরু হোক।" });
   }
 }
