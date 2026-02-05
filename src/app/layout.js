@@ -1,14 +1,9 @@
-export const metadata = {
-  title: 'Snehalata Supreme',
-  description: 'AI-Powered Fashion Ecosystem',
-}
+import './globals.css' // CSS ফাইল ইমপোর্ট নিশ্চিত করুন
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
