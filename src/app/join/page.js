@@ -1,81 +1,102 @@
 "use client";
-import React, { useState } from 'react';
-import { Sparkles, Upload, Loader2, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Brain, Zap, ShieldCheck, Globe, Rocket, ArrowRight, Loader2, Cpu } from 'lucide-react';
 
-export default function JoinHub() {
-  const [status, setStatus] = useState('idle'); // idle, analyzing, approved, rejected
-  const [brandName, setBrandName] = useState('');
+export default function SupremeJoin() {
+  const [vendorName, setVendorName] = useState('');
+  const [response, setResponse] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [siteUrl, setSiteUrl] = useState('');
+  const [liveSales, setLiveSales] = useState(254900);
 
-  const handleSimulatedAI = () => {
-    if(!brandName) return alert("Please enter your brand name");
-    setStatus('analyzing');
-    
-    // মাস্টার AI এখানে আপনার ব্র্যান্ড এনালাইসিস সিমুলেট করছে
-    setTimeout(() => {
-      setStatus('approved');
-    }, 4000);
+  // Live Sales Simulator (Grok Logic)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveSales(prev => prev + Math.floor(Math.random() * 300));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const executeSupremeLogic = async () => {
+    if(!vendorName) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: vendorName, type: 'brand_deployment' }),
+      });
+      const data = await res.json();
+      setResponse(data.text);
+      setSiteUrl(`https://${vendorName.toLowerCase().replace(/\s+/g, '-')}.snehalata.com`);
+    } catch (e) { console.error(e); }
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-8">
-      <div className="max-w-md w-full border border-white/10 p-10 rounded-3xl bg-white/5 backdrop-blur-xl">
-        <div className="flex justify-center mb-6 text-yellow-500">
-          <Sparkles size={40} />
+    <div className="min-h-screen bg-[#020202] text-white p-6 md:p-12 font-sans selection:bg-purple-600">
+      <div className="max-w-7xl mx-auto flex flex-col gap-12">
+        {/* Navigation / Live Stats */}
+        <div className="flex justify-between items-center border-b border-white/5 pb-8 opacity-80">
+          <div className="flex items-center gap-3 font-black text-xl italic tracking-tighter">
+            <Cpu className="text-purple-500 animate-pulse" /> SNEHALATA SUPREME
+          </div>
+          <div className="text-[10px] uppercase tracking-[0.4em] font-bold text-gray-500">
+             Global Sales: <span className="text-green-500">৳{liveSales.toLocaleString()}</span>
+          </div>
         </div>
-        
-        <h2 className="text-2xl font-black text-center mb-2 uppercase tracking-tighter">Master AI Governance</h2>
-        <p className="text-center text-gray-500 text-[10px] uppercase tracking-[0.2em] mb-10">Elite Vendor Application</p>
 
-        {status === 'idle' && (
-          <div className="space-y-6">
-            <div>
-              <label className="text-[10px] uppercase tracking-widest text-gray-400 block mb-2">Brand Identity</label>
-              <input 
-                type="text" 
-                placeholder="ENTER BRAND NAME"
-                className="w-full bg-transparent border-b border-white/20 py-3 text-sm focus:outline-none focus:border-white transition"
-                value={brandName}
-                onChange={(e) => setBrandName(e.target.value)}
-              />
-            </div>
-            
-            <div className="border-2 border-dashed border-white/10 rounded-2xl p-8 text-center hover:bg-white/5 transition cursor-pointer">
-              <Upload size={24} className="mx-auto mb-4 text-gray-500" />
-              <p className="text-[10px] uppercase tracking-widest text-gray-400">Upload Signature Design (Image)</p>
-            </div>
-
-            <button 
-              onClick={handleSimulatedAI}
-              className="w-full bg-white text-black font-black text-xs py-4 rounded-full uppercase tracking-[0.2em] hover:bg-gray-200 transition"
-            >
-              Initiate AI Review
-            </button>
-          </div>
-        )}
-
-        {status === 'analyzing' && (
-          <div className="text-center py-10">
-            <Loader2 size={40} className="mx-auto mb-6 animate-spin text-white" />
-            <p className="text-[10px] uppercase tracking-[0.3em] animate-pulse">Master AI is analyzing your brand DNA...</p>
-          </div>
-        )}
-
-        {status === 'approved' && (
-          <div className="text-center py-10 animate-in fade-in zoom-in">
-            <CheckCircle2 size={50} className="mx-auto mb-6 text-green-500" />
-            <h3 className="text-xl font-bold mb-4 uppercase">Access Granted</h3>
-            <p className="text-xs text-gray-400 leading-relaxed uppercase tracking-widest">
-              Master AI has identified your brand as "Elite Category". Welcome to the Snehalata Ecosystem, {brandName}.
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div>
+            <h1 className="text-8xl font-black italic tracking-tighter leading-[0.8] mb-8 uppercase">
+              1-Click <br/> <span className="text-purple-600">Ecosystem</span>
+            </h1>
+            <p className="text-gray-400 text-lg font-light leading-relaxed mb-10 max-w-md">
+              Aura AI এখন আপনার ব্র্যান্ডের জন্য বিশ্বমানের প্ল্যাটফর্ম তৈরি করতে প্রস্তুত। Grok এবং Gemini-র সম্মিলিত শক্তিতে আপনার ফ্যাশন সাম্রাজ্য শুরু করুন।
             </p>
-            <button 
-              onClick={() => window.location.href = '/'}
-              className="mt-8 text-[10px] font-bold uppercase border-b border-white pb-1"
-            >
-              Go to Dashboard
-            </button>
+            <div className="flex gap-4">
+               <Badge icon={ShieldCheck} text="SSL Secure" />
+               <Badge icon={Globe} text="Global Edge" />
+            </div>
           </div>
-        )}
+
+          {/* Action Box */}
+          <div className="bg-white/[0.02] border border-white/10 p-12 rounded-[60px] backdrop-blur-3xl shadow-[0_0_80px_rgba(168,85,247,0.1)]">
+            <input 
+              type="text" 
+              placeholder="Your Brand Identity..."
+              className="w-full bg-transparent border-b border-white/10 py-6 text-3xl font-extralight focus:outline-none focus:border-purple-600 mb-10 transition-all text-center"
+              value={vendorName}
+              onChange={(e) => setVendorName(e.target.value)}
+            />
+            <button 
+              onClick={executeSupremeLogic}
+              className="w-full bg-white text-black py-7 rounded-3xl font-black uppercase tracking-[0.4em] text-[10px] hover:bg-purple-600 hover:text-white transition-all transform active:scale-95"
+            >
+              {loading ? <Loader2 className="animate-spin mx-auto" /> : "Initiate Aura Deployment"}
+            </button>
+
+            {siteUrl && (
+              <div className="mt-12 p-8 bg-purple-600/10 border border-purple-500/20 rounded-[40px] animate-in zoom-in duration-500">
+                <p className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-4">Aura Analysis Complete</p>
+                <p className="text-sm italic text-gray-300 mb-6 leading-relaxed">"{response}"</p>
+                <div className="p-4 bg-black/50 rounded-2xl border border-white/5 text-center">
+                  <p className="text-[9px] uppercase text-gray-500 mb-1 tracking-widest">Reserved Subdomain</p>
+                  <p className="font-mono text-purple-400">{siteUrl}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function Badge({ icon: Icon, text }) {
+  return (
+    <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+      <Icon size={12} /> {text}
     </div>
   );
 }
