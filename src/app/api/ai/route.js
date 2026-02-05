@@ -8,17 +8,11 @@ export async function POST(req) {
     const { prompt } = await req.json();
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const fullPrompt = `
-      Identity: AURA AI - Supreme Soul of SNEHALATA.
-      Context: User is launching a fashion brand named "${prompt}".
-      Task: Give a very royal, elite, and professional welcome in Bengali.
-      Constraint: Max 2 sentences. Always start with "আসসালামু আলাইকুম।".
-    `;
+    const systemInstruction = `You are Aura AI, the soul of SNEHALATA. Brand: ${prompt}. Logic: Grok+Gemini. Welcome the user in a royal Bengali tone. Max 2 sentences.`;
 
-    const result = await model.generateContent(fullPrompt);
-    const text = result.response.text();
-    return NextResponse.json({ text });
+    const result = await model.generateContent(systemInstruction);
+    return NextResponse.json({ text: result.response.text() });
   } catch (error) {
-    return NextResponse.json({ text: "আসসালামু আলাইকুম। আপনার রাজকীয় ব্র্যান্ডের যাত্রা শুরু হোক।" });
+    return NextResponse.json({ text: "আসসালামু আলাইকুম। আপনার রাজকীয় সাম্রাজ্য প্রস্তুত।" });
   }
 }
