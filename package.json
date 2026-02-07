@@ -14,9 +14,9 @@
     "@supabase/supabase-js": "latest",
     "@google/generative-ai": "latest",
     "lucide-react": "latest",
-    "@prisma/client": "6.1.0"
+    "@prisma/client": "latest"
   },
   "devDependencies": {
-    "prisma": "6.1.0"
+    "prisma": "latest"
   }
 }
