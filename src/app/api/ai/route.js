@@ -6,15 +6,23 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function POST(req) {
   try {
-    const { prompt } = await req.json();
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const { prompt, vendorId } = await req.json();
 
-    const aiPrompt = `Identity: Aura AI. Task: Welcome the fashion brand "${prompt}" to Snehalata Supreme Ecosystem. Tone: Royal, elite, Bengali. Max 2 sentences.`;
-    const result = await model.generateContent(aiPrompt);
-    const text = result.response.text();
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
 
-    return NextResponse.json({ text });
+    // ডাটাবেসে লগ সেভ করা (যদি প্রয়োজন হয়)
+    if (vendorId) {
+      await prisma.vendor.update({
+        where: { id: vendorId },
+        data: { lastAiPrompt: prompt }
+      });
+    }
+
+    return NextResponse.json({ response: responseText });
   } catch (error) {
-    return NextResponse.json({ text: "আসসালামু আলাইকুম। আপনার রাজকীয় ব্র্যান্ডের যাত্রা শুরু হোক।" });
+    console.error("AI Error:", error);
+    return NextResponse.json({ error: "AI response failed" }, { status: 500 });
   }
 }
