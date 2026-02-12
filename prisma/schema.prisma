@@ -1,4 +1,4 @@
-datasource db {
+{
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
@@ -7,22 +7,89 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String?
+  role      UserRole @default(VENDOR)
+  vendor    Vendor?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Vendor {
-  id           String    @id @default(cuid())
+  id           Int          @id @default(autoincrement())
+  user         User         @relation(fields: [userId], references: [id])
+  userId       Int          @unique
   name         String
-  email        String    @unique
-  brandName    String?
-  lastAiPrompt String?
+  slug         String       @unique
+  websiteUrl   String?
+  tradeLicense String?
+  logo         String?
+  status       VendorStatus @default(PENDING)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  stores       Store[]
   products     Product[]
-  createdAt    DateTime  @default(now())
+}
+
+model Store {
+  id        Int       @id @default(autoincrement())
+  vendor    Vendor    @relation(fields: [vendorId], references: [id])
+  vendorId  Int
+  name      String
+  slug      String    @unique
+  theme     String    @default("dark-luxury")
+  banner    String?
+  domain    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  price       Float
-  vendorId    String
+  id          Int      @id @default(autoincrement())
   vendor      Vendor   @relation(fields: [vendorId], references: [id])
+  vendorId    Int
+  store       Store    @relation(fields: [storeId], references: [id])
+  storeId     Int
+  name        String
+  slug        String   @unique
+  description String?
+  price       Int
+  category    String?
+  imageUrl    String?
+  externalUrl String?
+  inStock     Boolean  @default(true)
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Sale {
+  id        Int      @id @default(autoincrement())
+  amount    Int
+  productId Int?
+  vendorId  Int?
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  details   String?
+  userId    Int?
+  createdAt DateTime @default(now())
+}
+
+enum UserRole {
+  ADMIN
+  VENDOR
+  CUSTOMER
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  BLOCKED
 }
